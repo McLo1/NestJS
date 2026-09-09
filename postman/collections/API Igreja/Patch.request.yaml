@@ -1,0 +1,8 @@
+$kind: http-request
+description: ""
+url: http://localhost:3000/usuarios/1
+method: PATCH
+body:
+  type: json
+  content: "{\r\n    \"nome\": \"Marcelo\"\r\n}"
+order: 4500884724011412
