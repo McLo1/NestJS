@@ -1,15 +1,25 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Usuario } from './usuario.js';
 import { NotFoundError } from 'rxjs';
+import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
 
 @Injectable()
 export class UsuariosService {
 
     private usuarios: Usuario[] = [];
 
+    private proximoId = 1;
 
-    cadastrar(usuario: Usuario): void {
-        this.usuarios.push(usuario)
+    cadastrar(dados: CreateUsuarioDto): void {
+
+
+
+        const novoUsuario: Usuario = {
+            id: this.proximoId + 1,
+            ...dados
+        }
+
+        this.usuarios.push(novoUsuario)
     }
 
     listar(): Usuario[] {

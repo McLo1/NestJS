@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Patch, Delete } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service.js';
 import type { Usuario } from './usuario.js';
+import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -13,7 +14,7 @@ export class UsuariosController {
     }
 
     @Post()
-    cadastrar(@Body() usuario: Usuario): void {
+    cadastrar(@Body() usuario: CreateUsuarioDto): void {
         this.usuarioservice.cadastrar(usuario);
     }
 
