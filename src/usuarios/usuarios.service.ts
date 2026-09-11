@@ -15,7 +15,7 @@ export class UsuariosService {
 
 
         const novoUsuario: Usuario = {
-            id: this.proximoId + 1,
+            id: this.proximoId++,
             ...dados
         }
 

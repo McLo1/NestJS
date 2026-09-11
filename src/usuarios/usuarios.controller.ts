@@ -19,7 +19,7 @@ export class UsuariosController {
     }
 
     @Get(':id')
-    buscarPorId(@Param('id', ParseIntPipe) id: number): Usuario | undefined {
+    buscarPorId(@Param('id', ParseIntPipe) id: number): Usuario {
         const user = this.usuarioservice.buscarPorId(id)
 
         if (!user) {
@@ -31,8 +31,6 @@ export class UsuariosController {
 
     @Patch(':id')
     atualizar(@Param('id', ParseIntPipe) id: number, @Body() usuario: Partial<Usuario>): boolean {
-
-        this.usuarioservice.atualizar(id, usuario)
 
         return this.usuarioservice.atualizar(id, usuario);
 
