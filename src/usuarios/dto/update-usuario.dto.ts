@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
+import {IsOptional, IsString, IsEmail,IsEnum} from 'class-validator'
 import { Role } from "../usuario.js";
 
 export class UsuarioUpdateDto {

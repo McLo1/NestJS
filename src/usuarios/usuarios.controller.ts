@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Pa
 import { UsuariosService } from './usuarios.service.js';
 import type { Usuario } from './usuario.js';
 import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
+import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -30,7 +31,7 @@ export class UsuariosController {
     }
 
     @Patch(':id')
-    atualizar(@Param('id', ParseIntPipe) id: number, @Body() usuario: Partial<Usuario>): boolean {
+    atualizar(@Param('id', ParseIntPipe) id: number, @Body() usuario: UsuarioUpdateDto): boolean {
 
         return this.usuarioservice.atualizar(id, usuario);
 

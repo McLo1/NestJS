@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Usuario } from './usuario.js';
 import { NotFoundError } from 'rxjs';
 import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
+import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
 
 @Injectable()
 export class UsuariosService {
@@ -32,7 +33,7 @@ export class UsuariosService {
         return user;
     }
 
-    atualizar(id: number, usuario: Partial<Usuario>): boolean {
+    atualizar(id: number, usuario: UsuarioUpdateDto): boolean {
 
         const index = this.usuarios.findIndex(user => user.id === id)
 
