@@ -1,70 +1,79 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Usuario } from './usuario.js';
-import { NotFoundError } from 'rxjs';
 import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
 import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
 import { db } from '../prisma/db.js';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UsuariosService {
 
-    private usuarios: Usuario[] = [];
 
-    private proximoId = 1;
+    async cadastrar(dados: CreateUsuarioDto): Promise<Usuario> {
 
-    cadastrar(dados: CreateUsuarioDto): void {
+        const usuarioExistente = await db.orm.public.Usuario.where({ email: dados.email }).first();
 
-
-
-        const novoUsuario: Usuario = {
-            id: this.proximoId++,
-            ...dados
+        if (usuarioExistente) {
+            throw new ConflictException("Usuario já existe")
         }
 
-        this.usuarios.push(novoUsuario)
+        const HashSenha = await bcrypt.hash(dados.senhaHash, 10);
+
+        const novoUsuario = await db.orm.public.Usuario.create({
+            nome: dados.nome,
+            email: dados.email,
+            senhaHash: HashSenha,
+            role: dados.role,
+        });
+
+        return novoUsuario;
     }
 
     async listar() {
         return await db.orm.public.Usuario.all();
     }
 
-    buscarPorId(id: number): Usuario | undefined {
-        const user = this.usuarios.find(user => user.id === id);
+    async buscarPorId(id: number): Promise<Usuario | null> {
 
-        return user;
+        const usuario = await db.orm.public.Usuario.
+            where({ id })
+            .first();
+
+        return usuario;
     }
 
-    atualizar(id: number, usuario: UsuarioUpdateDto): boolean {
+    async atualizar(id: number, usuario: UsuarioUpdateDto): Promise<Usuario> {
 
-        const index = this.usuarios.findIndex(user => user.id === id)
+        const usuarioExistente = await db.orm.public.Usuario
+            .where({ id })
+            .first();
 
-        // if (index === -1) {
-        //     return false;
-        // }
-
-        if (index === -1) {
+        if (!usuarioExistente) {
             throw new NotFoundException("Usuario não encontrado")
         }
 
-        const atualizar = {
-            ...this.usuarios[index],
-            ...usuario
-        }
+        const usuarioupdate = await db.orm.public.Usuario.where({ id }).update({
+            ...(usuario.nome !== undefined && { nome: usuario.nome }),
+            ...(usuario.email !== undefined && { email: usuario.email }),
+            ...(usuario.role !== undefined && { role: usuario.role }),
+        });
 
-        this.usuarios[index] = atualizar;
-
-        return true;
-    }
-
-    delete(id: number): boolean {
-        const index = this.usuarios.findIndex(user => user.id === id);
-
-        if (index === -1) {
+        if (!usuarioupdate) {
             throw new NotFoundException("Usuario não encontrado")
         }
 
-        this.usuarios.splice(index, 1)
-        return true;
+        return usuarioupdate;
+    }
+
+    async delete(id: number): Promise<Usuario> {
+        const usuarioDelete = await db.orm.public.Usuario.where({ id }).delete();
+
+        if (!usuarioDelete) {
+            throw new NotFoundException("Usuario não encontrado")
+        }
+
+        return usuarioDelete;
     }
 
 }

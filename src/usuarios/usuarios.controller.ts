@@ -15,13 +15,13 @@ export class UsuariosController {
     }
 
     @Post()
-    cadastrar(@Body() usuario: CreateUsuarioDto): void {
-        this.usuarioservice.cadastrar(usuario);
+    async cadastrar(@Body() usuario: CreateUsuarioDto): Promise<Usuario> {
+        return await this.usuarioservice.cadastrar(usuario);
     }
 
     @Get(':id')
-    buscarPorId(@Param('id', ParseIntPipe) id: number): Usuario {
-        const user = this.usuarioservice.buscarPorId(id)
+    async buscarPorId(@Param('id', ParseIntPipe) id: number): Promise<Usuario> {
+        const user = await this.usuarioservice.buscarPorId(id)
 
         if (!user) {
             throw new NotFoundException("Usuario não encontrado")
@@ -31,15 +31,15 @@ export class UsuariosController {
     }
 
     @Patch(':id')
-    atualizar(@Param('id', ParseIntPipe) id: number, @Body() usuario: UsuarioUpdateDto): boolean {
+    async atualizar(@Param('id', ParseIntPipe) id: number, @Body() usuario: UsuarioUpdateDto): Promise<Usuario> {
 
-        return this.usuarioservice.atualizar(id, usuario);
+        return await this.usuarioservice.atualizar(id, usuario);
 
     }
 
     @Delete(':id')
-    remover(@Param('id', ParseIntPipe) id: number) {
-        return this.usuarioservice.delete(id);
+    async remover(@Param('id', ParseIntPipe) id: number) {
+        return await this.usuarioservice.delete(id);
     }
 
 

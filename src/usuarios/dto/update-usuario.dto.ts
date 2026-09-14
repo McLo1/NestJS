@@ -1,9 +1,13 @@
-import {IsOptional, IsString, IsEmail,IsEnum} from 'class-validator'
+import { IsOptional, IsString, IsEmail, IsEnum, IsNotEmpty } from 'class-validator'
 import { Role } from "../usuario.js";
+import { Transform } from 'class-transformer';
 
 export class UsuarioUpdateDto {
+    @Transform(({ value }) =>
+        typeof value === 'string' ? value.trim() : value)
     @IsOptional()
     @IsString({ message: 'O nome deve ser uma string' })
+    @IsNotEmpty({ message: 'O nome não pode ser vazio' })
     nome?: string;
 
     @IsOptional()
