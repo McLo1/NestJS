@@ -1,0 +1,15 @@
+// use prisma-8
+
+
+enum Role {
+  ADMIN
+  MEMBRO
+}
+
+model Usuario {
+  id Int @id @default(autoincrement())
+  nome String
+  email String @unique
+  role Role
+}
+
