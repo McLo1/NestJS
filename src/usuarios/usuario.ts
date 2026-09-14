@@ -5,7 +5,9 @@ export interface Usuario {
     role: Role;
 };
 
-export enum Role {
-    ADMIN = "ADMIN",
-    MEMBRO = "MEMBRO",
-};
+export const Role = {
+    ADMIN: 'ADMIN',
+    MEMBRO: 'MEMBRO',
+} as const;
+
+export type Role = typeof Role[keyof typeof Role];

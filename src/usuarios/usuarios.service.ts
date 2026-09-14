@@ -3,6 +3,7 @@ import { Usuario } from './usuario.js';
 import { NotFoundError } from 'rxjs';
 import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
 import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
+import { db } from '../prisma/db.js';
 
 @Injectable()
 export class UsuariosService {
@@ -23,8 +24,8 @@ export class UsuariosService {
         this.usuarios.push(novoUsuario)
     }
 
-    listar(): Usuario[] {
-        return this.usuarios;
+    async listar() {
+        return await db.orm.public.Usuario.all();
     }
 
     buscarPorId(id: number): Usuario | undefined {

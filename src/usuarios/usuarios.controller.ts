@@ -10,7 +10,7 @@ export class UsuariosController {
     constructor(private readonly usuarioservice: UsuariosService) { }
 
     @Get()
-    listar(): Usuario[] {
+    listar(): Promise<Usuario[]> {
         return this.usuarioservice.listar();
     }
 
