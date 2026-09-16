@@ -4,6 +4,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
 import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
 import { db } from '../prisma/db.js';
 import * as bcrypt from 'bcrypt';
+import { UsuarioResponseDto } from './dto/response-usuario.dto.js';
 
 
 @Injectable()
@@ -27,31 +28,28 @@ export class UsuariosService {
             role: dados.role,
         });
 
-        return novoUsuario;
+        const { senhaHash: _, ...usuarioSemSenha } = novoUsuario;
+
+        return usuarioSemSenha;
     }
 
-    async listar() {
-        return await db.orm.public.Usuario.all();
+    async listar(): Promise<UsuarioResponseDto[]> {
+        const usuarios = await db.orm.public.Usuario.all();
+        return usuarios.map(
+            usuario => new UsuarioResponseDto(usuario)
+        );
     }
 
-    async buscarPorId(id: number): Promise<Usuario | null> {
+    async buscarPorId(id: number): Promise<UsuarioResponseDto | null> {
 
         const usuario = await db.orm.public.Usuario.
             where({ id })
             .first();
 
-        return usuario;
+        return usuario ? new UsuarioResponseDto(usuario) : null;
     }
 
-    async atualizar(id: number, usuario: UsuarioUpdateDto): Promise<Usuario> {
-
-        const usuarioExistente = await db.orm.public.Usuario
-            .where({ id })
-            .first();
-
-        if (!usuarioExistente) {
-            throw new NotFoundException("Usuario não encontrado")
-        }
+    async atualizar(id: number, usuario: UsuarioUpdateDto): Promise<UsuarioResponseDto> {
 
         const usuarioupdate = await db.orm.public.Usuario.where({ id }).update({
             ...(usuario.nome !== undefined && { nome: usuario.nome }),
@@ -63,17 +61,17 @@ export class UsuariosService {
             throw new NotFoundException("Usuario não encontrado")
         }
 
-        return usuarioupdate;
+        return new UsuarioResponseDto(usuarioupdate);
     }
 
-    async delete(id: number): Promise<Usuario> {
+    async delete(id: number): Promise<UsuarioResponseDto> {
         const usuarioDelete = await db.orm.public.Usuario.where({ id }).delete();
 
         if (!usuarioDelete) {
             throw new NotFoundException("Usuario não encontrado")
         }
 
-        return usuarioDelete;
+        return new UsuarioResponseDto(usuarioDelete);
     }
 
 }
