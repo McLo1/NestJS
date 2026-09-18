@@ -1,8 +1,9 @@
 import { Body, Controller } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from './auth.service.js';
 import { Post } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto } from './dto/login.dto.js';
 import { UsuarioResponseDto } from '../usuarios/dto/response-usuario.dto';
+import { LoginResponseDto } from './dto/login-response.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -10,7 +11,7 @@ export class AuthController {
 
 
     @Post('login')
-    async login(@Body() dados: LoginDto): Promise<UsuarioResponseDto> {
+    async login(@Body() dados: LoginDto): Promise<LoginResponseDto> {
         return this.authService.login(dados);
     }
 

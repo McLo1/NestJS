@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Patch, Delete, UseGuards } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service.js';
 import type { Usuario } from './usuario.js';
 import { CreateUsuarioDto } from './dto/create-usuario.dto.js';
 import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
 import { UsuarioResponseDto } from './dto/response-usuario.dto.js';
+import { AuthGuard } from '../auth/auth.guard.js';
 
 @Controller('usuarios')
 export class UsuariosController {
 
     constructor(private readonly usuarioservice: UsuariosService) { }
 
+    @UseGuards(AuthGuard)
     @Get()
     listar(): Promise<UsuarioResponseDto[]> {
         return this.usuarioservice.listar();
