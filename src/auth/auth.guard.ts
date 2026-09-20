@@ -1,5 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { JwtPayload } from "./interfaces/jwtPayload.interface";
+import type { RequestComUsuario } from "./types/requestComUsuario.interface.js";
+
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -11,7 +14,7 @@ export class AuthGuard implements CanActivate {
     }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest<RequestComUsuario>();
         const authorization = request.headers.authorization;
         if (!authorization) throw new UnauthorizedException("Token não fornecido");
 
@@ -20,7 +23,7 @@ export class AuthGuard implements CanActivate {
 
 
         try {
-            const payload = await this.jwtService.verifyAsync(token);
+            const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
             request.usuario = payload;
             return true;
         } catch (error) {
