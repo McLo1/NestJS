@@ -5,6 +5,9 @@ import { UsuarioUpdateDto } from './dto/update-usuario.dto.js';
 import { UsuarioResponseDto } from './dto/response-usuario.dto.js';
 import { AuthGuard } from '../auth/auth.guard.js';
 import { Req } from '@nestjs/common';
+import type { RequestComUsuario } from '../auth/types/requestComUsuario.interface.js';
+import { UsuarioAtual } from '../auth/decorators/usuario-atual.decorator.js';
+import type { JwtPayload } from '../auth/interfaces/jwtPayload.interface.js';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -13,8 +16,8 @@ export class UsuariosController {
 
     @UseGuards(AuthGuard)
     @Get()
-    listar(@Req() request: any): Promise<UsuarioResponseDto[]> {
-        console.log(request.usuario);
+    listar(@UsuarioAtual() usuario: JwtPayload): Promise<UsuarioResponseDto[]> {
+        console.log(usuario);
         return this.usuarioservice.listar();
     }
 

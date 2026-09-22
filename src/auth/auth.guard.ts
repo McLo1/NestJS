@@ -3,7 +3,6 @@ import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "./interfaces/jwtPayload.interface";
 import type { RequestComUsuario } from "./types/requestComUsuario.interface.js";
 
-
 @Injectable()
 export class AuthGuard implements CanActivate {
 
