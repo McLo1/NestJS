@@ -8,13 +8,17 @@ import { Req } from '@nestjs/common';
 import type { RequestComUsuario } from '../auth/types/requestComUsuario.interface.js';
 import { UsuarioAtual } from '../auth/decorators/usuario-atual.decorator.js';
 import type { JwtPayload } from '../auth/interfaces/jwtPayload.interface.js';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { Role } from './usuario.js';
 
 @Controller('usuarios')
 export class UsuariosController {
 
     constructor(private readonly usuarioservice: UsuariosService) { }
 
-    @UseGuards(AuthGuard)
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RolesGuard)
     @Get()
     listar(@UsuarioAtual() usuario: JwtPayload): Promise<UsuarioResponseDto[]> {
         console.log(usuario);
